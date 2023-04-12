@@ -16,12 +16,22 @@ class SetData(APIView):
         time_info = str(int(time.time()))
 
         task_data_info = TaskData.objects.filter(server_num=server_num).first()
-        task_data_info.server_num = server_num
-        task_data_info.run = run
-        task_data_info.keyword = keyword
-        task_data_info.link = link
-        task_data_info.time_info = time_info
-        task_data_info.save()
+        if task_data_info is not None:
+            task_data_info.server_num = server_num
+            task_data_info.run = run
+            task_data_info.keyword = keyword
+            task_data_info.link = link
+            task_data_info.time_info = time_info
+            task_data_info.save()
+        else:
+            TaskData.objects.create(
+                server_num=server_num,
+                run=run,
+                keyword=keyword,
+                link=link,
+                time_info=time_info
+            )
+
         all_task_data = TaskData.objects.all()
         task_data_list = []
         for task_data in all_task_data:
