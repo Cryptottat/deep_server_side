@@ -18,7 +18,7 @@ class GoogleAccountInfo(models.Model):
     google_password = models.CharField(max_length=100, null=False, default=False)
     email = models.CharField(max_length=100, null=False, default=False)
     usable = models.BooleanField(default=True)
-    matched_proxy = models.CharField(max_length=50, null=True, default=False)
+    matched_proxy = models.CharField(max_length=50, null=True, default=None)
     success_count = models.IntegerField(null=False, default=0)
     fail_count = models.IntegerField(null=False, default=0)
     using_request_time = models.CharField(max_length=100, null=True, default=0)
@@ -36,3 +36,4 @@ class TaskData(models.Model):
     class Meta:
         db_table = 'task_data'
         verbose_name = '작업 정보 테이블'
+
