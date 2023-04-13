@@ -10,8 +10,8 @@ class ProxyInfo(models.Model):
     fail_count = models.IntegerField(max_length=5, null=False, default=0)
     using_request_time = models.CharField(max_length=100, null=True, default=0)
     class Meta:
-        db_table = 'google_data'
-        verbose_name = '구글 계정 테이블'
+        db_table = 'proxy_data'
+        verbose_name = '프록시 테이블'
 
 class GoogleAccountInfo(models.Model):
     id = models.CharField(max_length=100, null=False, default=False)
