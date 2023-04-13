@@ -167,7 +167,7 @@ class ChangeProxy(APIView):
                 proxy_info.fail_count += change_value
             elif change_type == 'subtract':
                 proxy_info.fail_count -= change_value
-        change_target.save()
+        proxy_info.save()
 
         data = ProxyInfo.objects.filter(
             proxy=proxy,
