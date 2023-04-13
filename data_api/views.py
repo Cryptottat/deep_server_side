@@ -141,10 +141,10 @@ class SetGoogleAccount(APIView):
     def post(self, request):
         account_list = list(request.data.get('account_list', []))
         for account in account_list:
-            if not GoogleAccountInfo.objects.filter(id=account['id'],password=account['password'],email=account['email']).exists():
+            if not GoogleAccountInfo.objects.filter(google_id=account['id'],google_password=account['password'],email=account['email']).exists():
                 GoogleAccountInfo.objects.create(
-                    id=account['id'],
-                    password=account['password'],
+                    google_id=account['id'],
+                    google_password=account['password'],
                     email=account['email']
                 )
         data=GoogleAccountInfo.objects.all()
@@ -179,8 +179,8 @@ class GetGoogleAccount(APIView):
             google_account_info_filtered_by_matched_proxy.save()
             google_account_info = google_account_info_filtered_by_matched_proxy
             data = dict(
-                id=google_account_info.id,
-                password=google_account_info.password,
+                id=google_account_info.google_id,
+                password=google_account_info.google_password,
                 email=google_account_info.email,
                 usable=google_account_info.usable,
                 matched_proxy=google_account_info.matched_proxy,
@@ -199,8 +199,8 @@ class GetGoogleAccount(APIView):
         google_account_info.usable = False
         google_account_info.save()
         data = dict(
-            id=google_account_info.id,
-            password=google_account_info.password,
+            id=google_account_info.google_id,
+            password=google_account_info.google_password,
             email=google_account_info.email,
             usable=google_account_info.usable,
             matched_proxy=google_account_info.matched_proxy,
