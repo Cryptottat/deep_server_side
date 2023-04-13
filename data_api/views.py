@@ -152,24 +152,26 @@ class ChangeProxy(APIView):
             return Response(data=None)
         change_target = None
         if change_field == 'usable':
-            change_target = proxy_info.usable
+            if change_type == 'replace' or change_type == 'edit':
+                proxy_info.usable = change_value
         elif change_field == 'account':
-            change_target = proxy_info.account
+            if change_type == 'replace' or change_type == 'edit':
+                proxy_info.account = change_value
         elif change_field == 'success_count':
-            change_target = proxy_info.success_count
+            if change_type == 'add':
+                proxy_info.success_count += change_value
+            elif change_type == 'subtract':
+                proxy_info.success_count -= change_value
         elif change_field == 'fail_count':
-            change_target = proxy_info.fail_count
-        if change_type == 'add':
-            change_target += change_value
-        elif change_type == 'subtract':
-            change_target -= change_value
-        elif change_type == 'replace' or change_type == 'edit':
-            change_target = change_value
+            if change_type == 'add':
+                proxy_info.fail_count += change_value
+            elif change_type == 'subtract':
+                proxy_info.fail_count -= change_value
         change_target.save()
 
         data = ProxyInfo.objects.filter(
             proxy=proxy,
-        ).first().value()
+        ).values().first()
         return Response(data=data)
 
 
