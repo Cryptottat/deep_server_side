@@ -12,25 +12,32 @@ import time
 class SetData(APIView):
     def post(self, request):
         server_num = request.data.get('server_num', "")  #
-        run = request.data.get('run', "")  #
+        task_run = request.data.get('task_run', "")  #
         keyword = request.data.get('keyword', "")  #
         link = request.data.get('link', "")  #
+        get_proxy_make_unusable = request.data.get('get_proxy_make_unusable', True)  #
+        get_google_account_make_unusable = request.data.get('get_google_account_make_unusable', True)  #
         time_info = str(int(time.time()))
 
         task_data_info = TaskData.objects.filter(server_num=server_num).first()
         if task_data_info is not None:
             task_data_info.server_num = server_num
-            task_data_info.run = run
+            task_data_info.task_run = task_run
             task_data_info.keyword = keyword
             task_data_info.link = link
             task_data_info.time_info = time_info
+            task_data_info.get_proxy_make_unusable = get_proxy_make_unusable
+            task_data_info.get_google_account_make_unusable = get_google_account_make_unusable
+
             task_data_info.save()
         else:
             TaskData.objects.create(
                 server_num=server_num,
-                run=run,
+                task_run=task_run,
                 keyword=keyword,
                 link=link,
+                get_proxy_make_unusable=get_proxy_make_unusable,
+                get_google_account_make_unusable=get_google_account_make_unusable,
                 time_info=time_info
             )
 
@@ -39,9 +46,11 @@ class SetData(APIView):
         for task_data in all_task_data:
             data = dict(
                 server_num=task_data.server_num,
-                run=task_data.run,
+                task_run=task_data.task_run,
                 keyword=task_data.keyword,
                 link=task_data.link,
+                get_proxy_make_unusable=get_proxy_make_unusable,
+                get_google_account_make_unusable=get_google_account_make_unusable,
                 time_info=task_data.time_info,
             )
             task_data_list.append(data)
@@ -56,9 +65,11 @@ class GetData(APIView):
         for task_data in all_task_data:
             data = dict(
                 server_num=task_data.server_num,
-                run=task_data.run,
+                task_run=task_data.task_run,
                 keyword=task_data.keyword,
                 link=task_data.link,
+                get_proxy_make_unusable=get_proxy_make_unusable,
+                get_google_account_make_unusable=get_google_account_make_unusable,
                 time_info=task_data.time_info,
             )
             task_data_list.append(data)
@@ -204,6 +215,7 @@ class SetGoogleAccount(APIView):
                 id=google_account_info.google_id,
                 password=google_account_info.google_password,
                 email=google_account_info.email,
+                user_agent=google_account_info.user_agent,
                 usable=google_account_info.usable,
                 matched_proxy=google_account_info.matched_proxy,
                 success_count=google_account_info.success_count,
@@ -229,10 +241,10 @@ class GetGoogleAccount(APIView):
     def post(self, request):
         min_success = int(request.data.get('min_success', 0)) - 1
         max_fail = int(request.data.get('max_fail', 9999)) + 1
-        proxy = request.data.get('proxy', "")
+        proxy = request.data.get('proxy', None)
         make_unusable = request.data.get('make_unusable', False)
         google_account_info_filtered_by_matched_proxy = None
-        if not proxy == "":
+        if not proxy == None:
             google_account_info_filtered_by_matched_proxy = GoogleAccountInfo.objects.filter(
                 matched_proxy=proxy,
                 success_count__gt=min_success,
@@ -250,6 +262,7 @@ class GetGoogleAccount(APIView):
                 id=google_account_info.google_id,
                 password=google_account_info.google_password,
                 email=google_account_info.email,
+                user_agent=google_account_info.user_agent,
                 usable=google_account_info.usable,
                 matched_proxy=google_account_info.matched_proxy,
                 success_count=google_account_info.success_count,
@@ -274,6 +287,7 @@ class GetGoogleAccount(APIView):
             id=google_account_info.google_id,
             password=google_account_info.google_password,
             email=google_account_info.email,
+            user_agent=google_account_info.user_agent,
             usable=google_account_info.usable,
             matched_proxy=google_account_info.matched_proxy,
             success_count=google_account_info.success_count,
@@ -313,6 +327,9 @@ class ChangeGoogleAccount(APIView):
         elif change_field == 'matched_proxy':
             if change_type == 'replace' or change_type == 'edit':
                 google_account_info.matched_proxy = change_value
+        elif change_field == 'user_agent':
+            if change_type == 'replace' or change_type == 'edit':
+                google_account_info.user_agent = change_value
         elif change_field == 'success_count':
             if change_type == 'add':
                 google_account_info.success_count += change_value
