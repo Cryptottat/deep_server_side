@@ -121,9 +121,23 @@ class GetProxy(APIView):
             fail_count__lt=max_fail,
             usable=True
         ).first()
-        print(proxy_info)
-        if proxy_info is None:
-            return Response(data=None)
+
+        if proxy_info is None:  #원래 주면 안되는데 데이터..ㅠ
+            proxy_info = ProxyInfo.objects.filter(
+                account=account,
+                usable=True
+            ).first()
+            data = dict(
+                account=proxy_info.account,
+                proxy=proxy_info.proxy,
+                usable=proxy_info.usable,
+                success_count=proxy_info.success_count,
+                fail_count=proxy_info.fail_count,
+                using_request_time=int(time.time()),
+            )
+            return Response(data=data)
+
+            # return Response(data=None)
         last_using_request_time = proxy_info.using_request_time
 
         proxy_info.usable = not make_unusable
@@ -276,8 +290,23 @@ class GetGoogleAccount(APIView):
             fail_count__lt=max_fail,
             usable=True
         ).first()
-        if google_account_info is None:
-            return Response(data=None)
+        if google_account_info is None:  # 원래 데이터 주면 안되는 부분
+            google_account_info = GoogleAccountInfo.objects.filter(
+                usable=True
+            ).first()
+            data = dict(
+                id=google_account_info.google_id,
+                password=google_account_info.google_password,
+                email=google_account_info.email,
+                user_agent=google_account_info.user_agent,
+                usable=google_account_info.usable,
+                matched_proxy=google_account_info.matched_proxy,
+                success_count=google_account_info.success_count,
+                fail_count=google_account_info.fail_count,
+                using_request_time=int(time.time()),
+            )
+            return Response(data=data)
+            # return Response(data=data)
         last_using_request_time = google_account_info.using_request_time
         google_account_info.usable = not make_unusable
         if make_unusable:
