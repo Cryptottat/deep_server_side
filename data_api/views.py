@@ -49,8 +49,8 @@ class SetData(APIView):
                 task_run=task_data.task_run,
                 keyword=task_data.keyword,
                 link=task_data.link,
-                get_proxy_make_unusable=get_proxy_make_unusable,
-                get_google_account_make_unusable=get_google_account_make_unusable,
+                get_proxy_make_unusable=task_data.get_proxy_make_unusable,
+                get_google_account_make_unusable=task_data.get_google_account_make_unusable,
                 time_info=task_data.time_info,
             )
             task_data_list.append(data)
@@ -68,8 +68,8 @@ class GetData(APIView):
                 task_run=task_data.task_run,
                 keyword=task_data.keyword,
                 link=task_data.link,
-                get_proxy_make_unusable=get_proxy_make_unusable,
-                get_google_account_make_unusable=get_google_account_make_unusable,
+                get_proxy_make_unusable=task_data.get_proxy_make_unusable,
+                get_google_account_make_unusable=task_data.get_google_account_make_unusable,
                 time_info=task_data.time_info,
             )
             task_data_list.append(data)
