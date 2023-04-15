@@ -15,6 +15,7 @@ class SetData(APIView):
         task_run = request.data.get('task_run', "")  #
         keyword = request.data.get('keyword', "")  #
         link = request.data.get('link', "")  #
+        login_check = request.data.get('login_check', "")  #
         get_proxy_make_unusable = request.data.get('get_proxy_make_unusable', True)  #
         get_google_account_make_unusable = request.data.get('get_google_account_make_unusable', True)  #
         time_info = str(int(time.time()))
@@ -25,6 +26,7 @@ class SetData(APIView):
             task_data_info.task_run = task_run
             task_data_info.keyword = keyword
             task_data_info.link = link
+            task_data_info.login_check = login_check
             task_data_info.time_info = time_info
             task_data_info.get_proxy_make_unusable = get_proxy_make_unusable
             task_data_info.get_google_account_make_unusable = get_google_account_make_unusable
@@ -36,6 +38,7 @@ class SetData(APIView):
                 task_run=task_run,
                 keyword=keyword,
                 link=link,
+                login_check=login_check,
                 get_proxy_make_unusable=get_proxy_make_unusable,
                 get_google_account_make_unusable=get_google_account_make_unusable,
                 time_info=time_info
@@ -49,6 +52,7 @@ class SetData(APIView):
                 task_run=task_data.task_run,
                 keyword=task_data.keyword,
                 link=task_data.link,
+                login_check=task_data.login_check,
                 get_proxy_make_unusable=task_data.get_proxy_make_unusable,
                 get_google_account_make_unusable=task_data.get_google_account_make_unusable,
                 time_info=task_data.time_info,
@@ -68,6 +72,7 @@ class GetData(APIView):
                 task_run=task_data.task_run,
                 keyword=task_data.keyword,
                 link=task_data.link,
+                login_check=task_data.login_check,
                 get_proxy_make_unusable=task_data.get_proxy_make_unusable,
                 get_google_account_make_unusable=task_data.get_google_account_make_unusable,
                 time_info=task_data.time_info,
