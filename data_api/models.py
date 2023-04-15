@@ -32,6 +32,7 @@ class TaskData(models.Model):
     server_num = models.CharField(max_length=20, null=False, default=False)
     keyword = models.CharField(max_length=100, null=False, default=False)
     link = models.CharField(max_length=100, null=False, default=False)
+    login_check = models.CharField(max_length=100, null=True, default=None)
     time_info = models.CharField(max_length=100,null=False, default=False)
     get_proxy_make_unusable = models.BooleanField(default=True)
     get_google_account_make_unusable = models.BooleanField(default=True)
