@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import TaskData, ProxyInfo, GoogleAccountInfo
+from .models import TaskData, ProxyInfo, GoogleAccountInfo, ThreadInfo
 import json
 import time
 
@@ -64,22 +64,62 @@ class SetData(APIView):
 
 class GetData(APIView):
     def post(self, request):
-        all_task_data = TaskData.objects.all()
-        task_data_list = []
-        for task_data in all_task_data:
-            data = dict(
-                server_num=task_data.server_num,
-                task_run=task_data.task_run,
-                keyword=task_data.keyword,
-                link=task_data.link,
-                login_check=task_data.login_check,
-                get_proxy_make_unusable=task_data.get_proxy_make_unusable,
-                get_google_account_make_unusable=task_data.get_google_account_make_unusable,
-                time_info=task_data.time_info,
-            )
-            task_data_list.append(data)
+        print('get data')
+        host_name = request.data.get('host_name', None)  #
+        anydesk_id = request.data.get('anydesk_id', None)  #
+        hai_ip_account = request.data.get('hai_ip_account', None)  #
+        total_logged_in = request.data.get('total_logged_in', None)  #
+        thread_list = request.data.get('thread_list', [])  #
 
-        return Response(data=task_data_list)
+        for thread in thread_list:
+            if not ThreadInfo.objects.filter(host_name=host_name, anydesk_id=anydesk_id, thread_index=thread['thread_index']).exists():
+                ThreadInfo.objects.create(
+                    host_name=host_name,
+                    anydesk_id=anydesk_id,
+                    hai_ip_account=hai_ip_account,
+                    total_logged_in=0,
+                    thread_index=thread['thread_index'],
+                    server_num=thread['server_num'],
+                    proxy=thread['proxy'],
+                    google_id=thread['google_id'],
+                    google_password=thread['google_password'],
+                    google_email=thread['google_email'],
+                    user_agent=thread['user_agent'],
+                    google_logged_in=thread['google_logged_in'],
+                    now_state=thread['now_state'],
+                    is_filter=False,
+                    last_connected_timestamp = int(time.time())
+                )
+                continue
+            thread_info = ThreadInfo.objects.filter(host_name=host_name, anydesk_id=anydesk_id, thread_index=thread['thread_index']).first()
+            thread_info.server_num = thread['server_num']
+            thread_info.proxy = thread['proxy']
+            thread_info.google_id = thread['google_id']
+            thread_info.google_password = thread['google_password']
+            thread_info.google_email = thread['google_email']
+            thread_info.user_agent = thread['user_agent']
+            thread_info.google_logged_in = thread['google_logged_in']
+            thread_info.now_state = thread['now_state']
+            thread_info.save()
+        thread_info_list = ThreadInfo.objects.filter(host_name=host_name, anydesk_id=anydesk_id).all()
+        return_thread_info_list = []
+        for thread in thread_info_list:
+            data = dict(
+                thread_index=thread.thread_index,
+                server_num=thread.server_num,
+                proxy=thread.proxy,
+                google_id=thread.google_id,
+                google_password=thread.google_password,
+                google_email=thread.google_email,
+                keyword=thread.keyword,
+                is_filter=thread.is_filter,
+                target_url=thread.target_url,
+                enter_type=thread.enter_type,
+                target_state=thread.target_state
+            )
+            return_thread_info_list.append(data)
+        return_data = {'thread_list':return_thread_info_list}
+        return Response(data=return_data)
 
 
 class SetProxy(APIView):
@@ -94,7 +134,7 @@ class SetProxy(APIView):
 
     def post(self, request):
         account = request.data.get('account', "")  #
-        proxy_list = request.data.get('proxy_list',[])
+        proxy_list = request.data.get('proxy_list', [])
         for proxy in proxy_list:
             if not ProxyInfo.objects.filter(proxy=proxy).exists():
                 ProxyInfo.objects.create(
@@ -127,7 +167,7 @@ class GetProxy(APIView):
             usable=True
         ).first()
 
-        if proxy_info is None:  #원래 주면 안되는데 데이터..ㅠ
+        if proxy_info is None:  # 원래 주면 안되는데 데이터..ㅠ
             proxy_info = ProxyInfo.objects.filter(
                 account=account,
                 usable=True
@@ -170,6 +210,7 @@ class ChangeProxy(APIView):
     fail_count = models.IntegerField(null=False, default=0)
     using_request_time = models.CharField(max_length=100, null=True, default=0)
     """
+
     def post(self, request):
         proxy = request.data.get('proxy', '')
         change_field = request.data.get('change_field', '')
@@ -205,7 +246,6 @@ class ChangeProxy(APIView):
         return Response(data=data)
 
 
-
 class SetGoogleAccount(APIView):
     """
     id = models.CharField(max_length=100, null=False, default=False)
@@ -220,12 +260,15 @@ class SetGoogleAccount(APIView):
 
     def post(self, request):
         account_list = request.data.get('account_list', [])
+        replace = request.data.get('replace', False)
         for account in account_list:
-            if not GoogleAccountInfo.objects.filter(google_id=account['id'], google_password=account['password'], email=account['email']).exists():
+            if replace or GoogleAccountInfo.objects.filter(google_id=account['id']).exists() is False:
                 GoogleAccountInfo.objects.create(
                     google_id=account['id'],
                     google_password=account['password'],
-                    email=account['email']
+                    email=account['email'],
+                    matched_hai_ip_account=account['matched_hai_ip_account'],
+                    matched_proxy=account['matched_proxy'],
                 )
         list_for_return = []
         all_google_account_info = list(GoogleAccountInfo.objects.all())
@@ -236,6 +279,7 @@ class SetGoogleAccount(APIView):
                 email=google_account_info.email,
                 user_agent=google_account_info.user_agent,
                 usable=google_account_info.usable,
+                matched_hai_ip_account=google_account_info.matched_hai_ip_account,
                 matched_proxy=google_account_info.matched_proxy,
                 success_count=google_account_info.success_count,
                 fail_count=google_account_info.fail_count,
@@ -331,7 +375,6 @@ class GetGoogleAccount(APIView):
         return Response(data=data)
 
 
-
 class ChangeGoogleAccount(APIView):
     """
     oogle_id = models.CharField(max_length=100, null=False, default=False)
@@ -343,6 +386,7 @@ class ChangeGoogleAccount(APIView):
     fail_count = models.IntegerField(null=False, default=0)
     using_request_time = models.CharField(max_length=100, null=True, default=0)
     """
+
     def post(self, request):
         google_id = request.data.get('id', '')
         change_field = request.data.get('change_field', '')
@@ -381,6 +425,7 @@ class ChangeGoogleAccount(APIView):
         ).values().first()
         return Response(data=data)
 
+
 class MakeProxyAllUsable(APIView):
     def post(self, request):
         proxy_info_list = ProxyInfo.objects.all()
@@ -388,6 +433,7 @@ class MakeProxyAllUsable(APIView):
             proxy_info.usable = True
             proxy_info.save()
         return Response(data=None)
+
 
 class MakeGoogleAccountAllUsable(APIView):
     def post(self, request):
