@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent
 SECRET_KEY = 'django-insecure-44h(xlz3#b4e977#l&ywalvhw4l@3jw*%(wqg0&8npgndl0j1#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -115,7 +115,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
