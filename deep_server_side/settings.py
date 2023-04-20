@@ -130,7 +130,7 @@ STATIC_URL = '/static_root/'
 
 STATIC_ROOT = BASE_DIR / 'deep_server_side' / 'static_root'
 STATICFILES_DIRS = [
-    BASE_DIR / "static_files",
+    BASE_DIR / 'deep_server_side' / "static_files",
 ]
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
