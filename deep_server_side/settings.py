@@ -43,7 +43,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # "whitenoise.middleware.WhiteNoiseMiddleware",
+'django.contrib.staticfiles.storage.StaticFilesStorage',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -131,5 +132,5 @@ STATIC_ROOT = BASE_DIR / 'deep_server_side' / 'static_root'
 STATICFILES_DIRS = [
     BASE_DIR / "static_files",
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
