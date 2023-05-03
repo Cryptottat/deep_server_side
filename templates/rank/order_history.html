@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% if user.is_authenticated %}
+    {% if user.username == username %}
+        <div class="container my-3">
+            <table class="table">
+                <thead>
+                <tr class="table-dark">
+                    <th>번호</th>
+                    <th>목표시간</th>
+                    <th>키워드</th>
+                    <th>주소</th>
+                    <th>금액</th>
+                    <th>주문시간</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if order_list %}
+                {% for order in order_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ order.target_time|date:'Y-m-d f' }}</td>
+                    <td>{{ order.keyword|date }}</td>
+                    <td>{{ order.target_url }}</td>
+                    <td>{{ order.charge }}</td>
+                    <td>{{ order.order_time|date:'Y-m-d f' }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="3">주문이 없습니다.</td>
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <script type="text/javascript">
+            window.location.href="{% url 'rank:order_history' user.username %}";
+        </script>
+    {% endif %}
+
+{% else %}
+<script type="text/javascript">
+    window.location.href="{% url 'common:login' %}";
+</script>
+{% endif %}
+
+{% endblock %}

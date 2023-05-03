@@ -1,0 +1,19 @@
+{% if user.is_authenticated %}
+<a class="nav-link" href="{% url 'common:logout' %}">{{ user.username }} (로그아웃)</a>
+  환영합니다.
+{% else %}
+  <script type="text/javascript">
+    window.location.href="{% url 'common:login' %}";
+  </script>
+{% endif %}
+
+
+<!--{% if question_list %}-->
+<!--    <ul>-->
+<!--    {% for question in question_list %}-->
+<!--        <li><a href="/pybo/{{ question.id }}/">{{ question.subject }}</a></li>-->
+<!--    {% endfor %}-->
+<!--    </ul>-->
+<!--{% else %}-->
+<!--    <p>질문이 없습니다.</p>-->
+<!--{% endif %}-->

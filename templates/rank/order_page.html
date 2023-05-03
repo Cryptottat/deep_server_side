@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    <form method="post" action="{% url 'rank:order' user.username %}">
+        {% csrf_token %}
+        {% include "form_errors.html" %}
+        <div class="mb-3">
+            <label for="target_time">주문시간</label>
+            <input type="datetime-local" class="form-control" name="target_time" id="target_time"
+                   value="{{ form.target_time.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="keyword">키워드</label>
+            <input type="text" class="form-control" name="keyword" id="keyword"
+                   value="{{ form.keyword.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="target_url">방송링크</label>
+            <input type="text" class="form-control" name="target_url" id="target_url"
+                   value="{{ form.target_url.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="charge">포인트</label>
+            <input type="text" class="form-control" name="charge" id="charge"
+                   value="{{ form.charge.value|default_if_none:'' }}">
+        </div>
+<!--        <div type="text" class="form-control" name="username" id="username"-->
+<!--                   value={{user.username}}>-->
+        <button type="submit" class="btn btn-primary">주문하기</button>
+    </form>
+</div>
+{% endblock %}

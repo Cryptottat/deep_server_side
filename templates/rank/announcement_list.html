@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if user.is_authenticated %}
+{% else %}
+  <script type="text/javascript">
+    window.location.href="{% url 'common:login' %}";
+  </script>
+{% endif %}
+
+<div class="container my-3">
+    <table class="table">
+        <thead>
+        <tr class="table-dark">
+            <th>번호</th>
+            <th>공지사항</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if announcement_list %}
+        {% for announcement in announcement_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                <a href="{% url 'rank:announcement_detail' announcement.id %}">{{ announcement.subject }}</a>
+            </td>
+            <td>{{ announcement.create_date|date:'Y-m-d f' }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">공지사항이 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

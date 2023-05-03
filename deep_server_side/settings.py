@@ -15,24 +15,26 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-44h(xlz3#b4e977#l&ywalvhw4l@3jw*%(wqg0&8npgndl0j1#'
-
+AUTH_USER_MODEL = 'common.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
 INSTALLED_APPS = [
     'rest_framework',
     'data_api',
+    'six',
+    'rank.apps.RankConfig',
+    'common.apps.CommonConfig',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # "whitenoise.middleware.WhiteNoiseMiddleware",
-# 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    # 'django.contrib.staticfiles.storage.StaticFilesStorage',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -58,7 +60,7 @@ ROOT_URLCONF = 'deep_server_side.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,7 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'deep_server_side.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -83,7 +84,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -103,19 +103,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'  # 한국 시간 적용
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # import mimetypes
 # mimetypes.add_type("text/css", ".css", True)
@@ -123,15 +122,42 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 
+# # 이하 잘 되던 원래 버전
+# # Default primary key field type
+# # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+# STATIC_URL = '/static_root/'
+#
+# STATIC_ROOT = BASE_DIR / 'deep_server_side' / 'static_root'
+# # STATICFILES_DIRS = [
+# #     BASE_DIR / 'deep_server_side' / "static_files",
+# # ]
+# # STATICFILES_STORAGE = BASE_DIR / 'deep_server_side' / "static_files"
+# # import django.contrib.staticfiles.storage.StaticFilesStorage
+# # 이하 잘 되던 원래 버전
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-STATIC_URL = '/static_root/'
 
-STATIC_ROOT = BASE_DIR / 'deep_server_side' / 'static_root'
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'deep_server_side' / "static_files",
-# ]
-# STATICFILES_STORAGE = BASE_DIR / 'deep_server_side' / "static_files"
-# import django.contrib.staticfiles.storage.StaticFilesStorage
+# 점투장 버전
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
+# email
+EMAIL_HOST = 'smtp.gmail.com'
+# 메일을 호스트하는 서버
+EMAIL_PORT = '587'
+# gmail과의 통신하는 포트
+EMAIL_HOST_USER = 'deepytaws@gmail.com'
+# 발신할 이메일
+EMAIL_HOST_PASSWORD = 'fxsxoeihiowflxii'
+# 발신할 메일의 비밀번호
+EMAIL_USE_TLS = True
+# TLS 보안 방법
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
