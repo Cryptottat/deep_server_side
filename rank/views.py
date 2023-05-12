@@ -2,16 +2,22 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Announcement  # 유저정보 불러와야됨
 from common.models import User
-from .models import Order
+from .models import Order,PricePerHour
 from .forms import OrderForm
 from django.utils import timezone
-def point(request):
-    return redirect('rank:index')
+
+# def point(request):
+#     return render(request, 'rank/point_page.html')
+#     return redirect('rank:index')
 def order_history(request,username):
     order_list = Order.objects.filter(username=username)
     return render(request, 'rank/order_history.html', {'order_list':order_list, 'username':username})
 def order_page(request):
-    return render(request, 'rank/order_page.html')
+    Price_Per_Hour = PricePerHour.objects.all().first()
+    if Price_Per_Hour is None:
+        return HttpResponse('시간당 포인트가 설정되지 않았습니다. 관리자에게 문의하십시오.')
+    price_per_hour = Price_Per_Hour.price_per_hour
+    return render(request, 'rank/order_page.html',{"price_per_hour":price_per_hour})
 def order(request, username):
     print('ordddddddddddddddddddddder')
     if request.method == "POST":
@@ -25,13 +31,15 @@ def order(request, username):
             keyword = form.cleaned_data.get('keyword')
             target_url = form.cleaned_data.get('target_url')
             charge = form.cleaned_data.get('charge')
+            price_per_hour = PricePerHour.objects.all().first().price_per_hour
+            need_point = int(charge)*int(price_per_hour)
             print(3)
             user = User.objects.filter(username=username).first()
-            if user.point < int(charge):
+            if user.point < int(need_point):
                 form.add_error('charge', '포인트가 부족합니다.')
                 return render(request, 'rank/order_page.html', {'form': form})
 
-            user.point = user.point - charge
+            user.point = user.point - need_point
             user.save()
             print(4)
             Order.objects.create(

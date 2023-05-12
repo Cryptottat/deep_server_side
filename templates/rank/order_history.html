@@ -12,7 +12,7 @@
                     <th>목표시간</th>
                     <th>키워드</th>
                     <th>주소</th>
-                    <th>금액</th>
+                    <th>지속시간</th>
                     <th>주문시간</th>
                 </tr>
                 </thead>
@@ -22,7 +22,7 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ order.target_time|date:'Y-m-d f' }}</td>
-                    <td>{{ order.keyword|date }}</td>
+                    <td>{{ order.keyword }}</td>
                     <td>{{ order.target_url }}</td>
                     <td>{{ order.charge }}</td>
                     <td>{{ order.order_time|date:'Y-m-d f' }}</td>

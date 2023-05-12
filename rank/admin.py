@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Announcement
+from .models import Announcement,PricePerHour
 
 class AdminAnnouncement(admin.ModelAdmin):
     model = Announcement
@@ -9,5 +9,15 @@ class AdminAnnouncement(admin.ModelAdmin):
         'subject',
         'create_date',
     )
+
+class AdminPricePerHour(admin.ModelAdmin):
+    model = PricePerHour
+    # list_display = (
+    #     'subject',
+    #     'create_date',
+    # )
+# Register your models here.
+
 # Register your models here.
 admin.site.register(Announcement,AdminAnnouncement)
+admin.site.register(PricePerHour,AdminPricePerHour)

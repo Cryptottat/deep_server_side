@@ -20,13 +20,22 @@
                    value="{{ form.target_url.value|default_if_none:'' }}">
         </div>
         <div class="mb-3">
-            <label for="charge">포인트</label>
-            <input type="text" class="form-control" name="charge" id="charge"
+            <label for="charge">시간</label>
+            <input type="number" class="form-control" name="charge" id="charge" oninput="inputChanged()" min="1"
                    value="{{ form.charge.value|default_if_none:'' }}">
         </div>
-<!--        <div type="text" class="form-control" name="username" id="username"-->
-<!--                   value={{user.username}}>-->
-        <button type="submit" class="btn btn-primary">주문하기</button>
+
+        <!--        <div type="text" class="form-control" name="username" id="username"-->
+        <!--                   value={{user.username}}>-->
+        <button type="submit" class="btn btn-primary" id="createBtn">주문하기</button>
+        <script>
+            function inputChanged(){
+                let orderPoint = document.getElementById('charge').value
+                let caled = orderPoint*{{ price_per_hour }}
+                document.getElementById('createBtn').innerText= orderPoint+" 시간 ("+caled.toString()+" 포인트) 신청하기";
+            }
+
+        </script>
     </form>
 </div>
 {% endblock %}

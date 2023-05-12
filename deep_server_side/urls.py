@@ -20,6 +20,7 @@ from rank import views as rank_views
 urlpatterns = [
     path('rank/', include('rank.urls'),name='rank'),
     path('common/', include('common.urls'),name='common'),
+    path('payments/', include('payments.urls'), name='payments'),
     path('admin/', admin.site.urls),
     path('data_api/', include('data_api.urls')),
     path('', rank_views.index, name='index'),

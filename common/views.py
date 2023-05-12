@@ -5,7 +5,6 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect,HttpResponse
 from common.forms import UserForm
 
-
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
@@ -14,15 +13,12 @@ from django.core.mail import EmailMessage
 from common.tokens import account_activation_token
 from django.utils.encoding import force_bytes, force_text
 
-
 from django.contrib.auth.models import User
 from django.contrib import auth
 
 from .models import User
+
 def activate(request, uid64, token):
-
-
-
     # 되는 버전
     uid = force_text(urlsafe_base64_decode(uid64))
     user = User.objects.get(pk=uid)
@@ -75,21 +71,12 @@ def signup(request):
 
         if form.is_valid():
             user_email = form.cleaned_data.get('email')
-            # if Profile.objects.filter(email=user_email).exists():
-            #     form.add_error('email', '사용중인 이메일입니다.')
-            #     return render(request, 'common/signup.html', {'form': form})
-
             user = form.save()
             user.is_active = False
             user.save()
 
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-
-            # profile = Profile(user=user)
-            # profile.email = user_email
-            # profile.save()
-
 
             # user = authenticate(username=username, password=raw_password)  # 사용자 인증
             # user.is_active = False

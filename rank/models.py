@@ -13,3 +13,7 @@ class Order(models.Model):
     target_url = models.CharField(max_length=200)
     charge = models.IntegerField()
     order_time = models.DateTimeField()
+
+
+class PricePerHour(models.Model):
+    price_per_hour = models.IntegerField()

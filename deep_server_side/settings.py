@@ -19,8 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-44h(xlz3#b4e977#l&ywalvhw4l@3jw*%(wqg0&8npgndl0j1#'
-AUTH_USER_MODEL = 'common.User'
+SECRET_KEY = ''
+COINBASE_COMMERCE_API_KEY = ''
+EMAIL_HOST_PASSWORD = ''
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -30,11 +31,12 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'rest_framework',
+    'rest_framework.authtoken',
     'data_api',
     'six',
     'rank.apps.RankConfig',
     'common.apps.CommonConfig',
-    
+    'payments.apps.PaymentsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,7 +79,7 @@ WSGI_APPLICATION = 'deep_server_side.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+AUTH_USER_MODEL = 'common.User'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -156,7 +158,7 @@ EMAIL_PORT = '587'
 # gmail과의 통신하는 포트
 EMAIL_HOST_USER = 'deepytaws@gmail.com'
 # 발신할 이메일
-EMAIL_HOST_PASSWORD = 'fxsxoeihiowflxii'
+
 # 발신할 메일의 비밀번호
 EMAIL_USE_TLS = True
 # TLS 보안 방법
